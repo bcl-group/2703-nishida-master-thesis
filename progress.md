@@ -1,3 +1,15 @@
+# **10/28~11/4にしたこと**  
+## したこと  
+1. 論文を読んだ
+- Constraints as Rewards: Reinforcement Learning for Robots without Reward Functions
+- Yu Ishihara, Noriaki Takasugi, Kotaro Kawakami, Masaya Kinoshita, Kazumi Aoyama
+- https://arxiv.org/abs/2501.04228
+- 内容：報酬の重みを人手で調整する代わりにやるべきことを複数の制約として表現し、それをラグランジュ法で目的関数に組み込み、強化学習に組み込むことで各目的の重要度を自動で決める
+## 困っていること
+特になし
+## 今後のtodo  
+- 研究を進める
+
 # **10/14~10/21にしたこと**  
 ## したこと  
 1. PPOのお勉強
