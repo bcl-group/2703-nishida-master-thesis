@@ -1,5 +1,17 @@
 # **10/28~11/4にしたこと**  
 ## したこと  
+- キネマティクスのみのリーチング環境にダイナミクスを取り入れた
+- ２リンクアームの運動方程式を含む力学の勉強を行った
+  - https://github.com/bcl-group/2703-nishida-master-thesis/tree/main/docs/study/mechanics
+- ハイパーパラメータの調整
+## 困っていること
+特になし
+## 今後のtodo  
+- 研究を進める
+- 研究紹介の準備
+
+# **10/28~11/4にしたこと**  
+## したこと  
 1. 論文を読んだ
 - Constraints as Rewards: Reinforcement Learning for Robots without Reward Functions
 - Yu Ishihara, Noriaki Takasugi, Kotaro Kawakami, Masaya Kinoshita, Kazumi Aoyama
