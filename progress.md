@@ -1,8 +1,35 @@
-# **10/28~11/4にしたこと**  
+# **1/20~1/27にしたいこと**  
+
+## 0. 今週のゴール
+「BG=actor-critic + HPC=エピソード表現/リプレイ → PPO-clip=安定化制約」という仮説をある程度説明できる状態にする
+
+## 1. 仮説の要約
+仮説：基底核（BG）を actor-critic とみなし、海馬（HPC）がエピソード表現・リプレイにより「サンプル生成／状態表現（文脈・遷移構造）」を供給する。方策更新は、過大更新を抑える近接制約が必要で、PPO-clipはその機能的候補として位置づけられる。
+
+## 2. 今週のToDo
+- 論文を読む
+  - Hippocampal replays under the scrutiny of reinforcement learning models
+    - Romain Cazé,* X Mehdi Khamassi,* Lise Aubin, and Benoît Girard
+    - Journal of neurophysiology, 2018
+    - 海馬によるリプレイは記憶保持だけでなく強化学習に関与してるらしい。そこで、観測されるリプレイの型(foward など）・場所（物理的位置：報酬をもらえる場所や意思を決定する場所）・タイミング（睡眠中や覚醒中）が、どんな強化学習（MF/MB/Dyna）のどの計算過程（学習か推論か）に対応するのが自然かを整理し、実験で検証可能な予測（もし観測が「意思決定点で forward が多い」なら、単なる復習（MF）よりも、候補行動を評価する計画推論（MB/Dyna）が濃厚になる。）として提示する
+    - Model-Free(MF-RL)：状態や行動の価値を、経験した報酬から直接更新
+    - Model-Based（MB-RL）:遷移Tと報酬Rからなる world model を構築(頭の中で先をシミュレーションしてから行動を決める)
+    - Dyna:混合（モデルフリーの学習を基本にしつつ、モデル（world model）も使って“仮想の経験”を作り、それでもう一回学習）
+  - The hippocampal–striatal axis in learning, prediction and goal-directed behavior
+    - Pennartz, C. M. A., et al.
+    - Trends in neurosciences ,2011
+    - ラットのニューロンの活動を手掛かりに海馬から線条体に対して、どんな情報が入ってくるのが妥当かを整理し、モデルの提案
+    - 提案モデル：線条体を単純なActor–Criticとは捉えず、海馬によるリプレイに基づいて「次に何が起きるか（結果予測）」を更新し、その結果として次回以降の行動選択がより良くなる
+- 人に近しいパラメータで回す
+## 困っていること
+特になし
+## 今後のtodo  
+- 研究を進める
+- 研究紹介の準備
+
+
+# **1/6~1/13にしたこと**  
 ## したこと  
-- キネマティクスのみのリーチング環境にダイナミクスを取り入れた
-- ２リンクアームの運動方程式を含む力学の勉強を行った
-  - https://github.com/bcl-group/2703-nishida-master-thesis/tree/main/docs/study/mechanics
 - ハイパーパラメータの調整
 ## 困っていること
 特になし
