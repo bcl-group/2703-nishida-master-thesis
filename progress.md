@@ -1,6 +1,7 @@
-# **3/24~3/31にしたこと**  
+# **4/7~4/14にしたこと**  
 ## してること  
 - 関節角度超過罰を入れた
+![research_introduction_4_12](study/report/research_introduction_4_12)
 - パラメータ調整
 
 ## 困ってること
