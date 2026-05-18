@@ -1,3 +1,206 @@
+# **5/11~5/18にしたこと**  
+やったこと
+AIを活用したシミュレーションのパラメータ探索・評価支援
+## 基本方針
+- パラメータ候補の作成は Codex が担当する
+- 実行はユーザーが `run_batch.sh` で行う
+- 結果の比較・評価・次候補の再提案は Codex が担当する
+- パラメータ変更は json 
+- 1回の比較単位は 3候補 1 batch とする
+
+## 評価の優先順位
+1. 成功率
+2. ベル型速度プロファイル
+3. 直線性
+4. 報酬
+5. 補助的に評価時エピソード長
+
+## 各評価値の意味と出し方
+
+### 成功率
+使う値
+- `success_rate_1000`
+- `success_rate_100`
+- `success_rate_all`
+
+出し方
+- `episode_full_metrics.csv` などのエピソード単位ログから、成功フラグ列の平均を取る
+- `success_rate_all` は全エピソード平均
+- `success_rate_100` は直近100エピソード平均
+- `success_rate_1000` は直近1000エピソード平均
+
+見方
+- まず成功率が下がっていないかを見る
+- 成功率が大きく悪化した候補は原則不採用
+
+### ベル型速度プロファイル
+使う値
+- `peak_time_ratio`
+- `peak_count`
+- `bell_peak_error`
+
+出し方
+- `end_result_2joint_post_env.csv` などの手先軌道ログから速度時系列を使って計算する
+- `peak_time_ratio = 速度ピーク時刻 / 運動時間`
+- `peak_count = 局所ピーク数`
+- `bell_peak_error = abs(peak_time_ratio - 0.5)`
+
+理想
+- `peak_time_ratio` は 0.5 に近い
+- `peak_count` は 1
+- `bell_peak_error` は 0 に近い
+
+見方
+- 成功率が同程度なら、まずここで比較する
+- 単峰で、ピークが運動中盤に来る候補を優先する
+
+### 直線性
+使う値
+- `path_length_ratio`
+
+出し方
+- 手先軌道から軌道長と始点終点の直線距離を求める
+- `path_length_ratio = 軌道長 / 始点終点距離`
+
+理想
+- 1.0 に近いほどよい
+
+見方
+- 成功率とベル型指標が同程度なら、より 1.0 に近い候補を優先する
+
+### 報酬
+使う値
+- `mean_total_reward_1000`
+- `mean_total_reward_100`
+- `last_eval_mean_reward`
+
+出し方
+- 学習ログの各エピソード報酬から平均を計算する
+- 評価実行時の `eval_metrics.csv` から最終評価報酬を取得する
+
+見方
+- 主指標ではなく補助指標
+- 他の指標が拮抗した場合に参考にする
+
+### 評価時エピソード長
+使う値
+- `last_eval_mean_ep_length`
+
+出し方
+- `eval_metrics.csv` の最後の評価行から取得する
+
+見方
+- 補助指標
+- 最大ステップ張り付きが続いていないかの確認に使う
+
+## 1サイクルの流れ
+
+### step 1
+Codex が次の3候補を作る
+
+作るもの
+- `candidate_01.json`
+- `candidate_02.json`
+- `candidate_03.json`
+
+このとき
+- 1候補あたり変更は最大2パラメータ
+- 原則として変更幅は ±20% 以内
+- 3候補は異なる仮説、または同一仮説の軽・中・強で作る
+
+### step 2
+ユーザーが batch を実行する
+
+ユーザーがローカル shell でこれを実行する
+
+`./run_batch.sh configs/<batch_id>`
+
+このスクリプトが行うこと
+- candidate json を `current_run_config.json` に順次コピー
+- 実行
+- 評価スクリプト実行
+- candidate ごとの結果を保存
+- batch 全体の比較表を `summary.csv` と `summary.md` に保存
+- 比較図を png と pdf で保存
+
+### step 3
+Codex が batch 結果を分析する
+
+Codex が見るもの
+- `summary.csv`
+- `summary.md`
+- 比較図
+- 各 candidate の `codex_iteration_summary.json`
+
+Codex が行うこと
+- 3候補の横比較
+- ベスト候補、ワースト候補の判断
+- 採用、不採用判断
+- 今回の仮説が当たったかどうかの整理
+- 次に試すべき仮説の提案
+
+### step 4
+記録を残す
+
+Codex が更新するもの
+- `analysis.md`
+- `codex_tuning_history.md`
+
+### step 5
+次の batch を作る
+
+Codex が前回の
+- `analysis.md`
+- `codex_tuning_history.md`
+- 最新 batch の summary
+を踏まえて、次の3候補 json を作る
+
+これで1サイクル完了
+
+## 候補作成時のルール
+- 1候補で変更してよいパラメータは最大2個
+- 原則 ±20% 以内
+- 例外的に固定刻み変更可
+  - `STEPS_MAX`: ±10 or ±20
+  - `POST_MOVING_TIME`: ±2
+  - `HID_LAY`: 64 ↔ 128
+  - `BATCH_SIZE`: 128, 256, 512
+- 符号反転は禁止
+- 各 candidate に変更意図を必ず付ける
+
+## いま主に調整対象にしているパラメータ
+- `STEPS_MAX`
+- `REWARD_P_V_TER`
+- `REWARD_P_V_POS`
+- `REWARD_P_ACC`
+- `REWARD_J`
+- `SIGMA_T`
+- `R_GOAL`
+- `TIME_COST`
+- `SHAPING_DIST_COEFF`
+- `TOTAL_TIMESTEPS`
+- `LEARNING_RATE`
+- `TAU`
+- `HID_LAY`
+- `BUFFER_SIZE`
+- `BATCH_SIZE`
+- `POST_MOVING_TIME`
+- `DT`
+- `JERK_RAMP_INIT_FACTOR`
+- `JERK_RAMP_EPISODES`
+- `REWARD_JE_LIM`
+- `REWARD_LIMIT_HIT`
+- `TRUNCATION_PENALTY`
+
+## 採用判断の考え方
+- 成功率が大きく悪化する候補は原則不採用
+- 成功率が同等なら、ベル型速度プロファイルを優先する
+- その上で直線性を見る
+- 報酬は補助指標として使う
+- 必要なら「どれも採用しない」「現状維持」も選ぶ
+
+
+  
 # **4/14~4/21にしたこと**  
 ## してること  
 - abst作成
