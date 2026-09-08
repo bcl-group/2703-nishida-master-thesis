@@ -18,6 +18,40 @@
 $$
 A_{\mathrm{used}}=\frac{A_{\mathrm{raw}}}{\mathrm{RMS}_{\mathrm{past}}+\epsilon}
 $$
+### Running RMSの計算
+
+rollout kの生のAdvantageについて、二乗平均を計算する（N＝2048）。
+
+$$
+q_k=\frac{1}{N}\sum_{i=1}^{N}A_{k,i}^{2}
+$$
+
+初回はその値で履歴を初期化する。
+
+$$
+m_{2,1}=q_1
+$$
+
+2回目以降は指数移動平均で更新する。
+
+$$
+m_{2,k}=0.99m_{2,k-1}+0.01q_k
+$$
+
+現在のrolloutの学習には、過去までの履歴から求めたRMSを使用する。
+
+$$
+\mathrm{RMS}_{\mathrm{past},k}=\sqrt{m_{2,k-1}}
+$$
+
+$$
+A_{\mathrm{used},k,i}
+=\frac{A_{k,i}}{\mathrm{RMS}_{\mathrm{past},k}+\epsilon}
+$$
+
+- 初回はscale＝1で学習する。
+- 同一rolloutの全epochで尺度を固定し、学習終了後に履歴を1回だけ更新する。
+- 実装ではゼロ除算対策としてRMSの下限を10⁻⁶、εを10⁻⁸とする。
 
 - RMS履歴は全epoch終了後に1回更新（指数移動平均、係数0.01）。
 - 直近1000 episodeの到達率100%、速度波形が単峰化し、停止性能・躍度が改善。
