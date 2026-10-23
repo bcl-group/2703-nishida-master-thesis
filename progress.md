@@ -21,7 +21,7 @@
 
 ### PPOの資料整理
 
-- PPOの説明を整理し、文章の構成や数式の表示を修正して、内容を理解しやすい形にした。
+- PPOの説明を整理し、文章の構成や数式の表示を修正して、内容を理解しやすい形にした[PPOのflow](docs/study/report/PPO_flow.pdf)。
 - ChatGPTとNotion・GitHubを連携し、Notionに整理した研究資料をGitHubにも反映できる環境を整えた。
 
 ### PPOと大脳基底核の対応づけ
