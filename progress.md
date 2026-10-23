@@ -8,7 +8,7 @@
   
 # 10月：PPOの生理学的対応の検討と修論Methodsの執筆
 - 9月までの実験結果を踏まえ、除去が難しい処理や置換できそうな処理について、引き続き検証を進める。
-[PPOのflow](docs/study/report/PPO_flow.pdf)
+[PPOのflow](docs/study/report/fbe21cb3-634b-44b3-a31d-46bdf2ce762b_ppo_flow_readable_2026-10-19.pdf)
 - 特に以下の3つの処理について先行研究を調査し、脳機能との対応や生理学的に妥当な処理への置換を検討する。
   - 方策のクリッピング処理：過去の方策との比較や更新の抑制を実現する神経機構
   - バッチ処理：複数の経験に基づく更新の平均化と、学習の安定化
@@ -21,7 +21,7 @@
 
 ### PPOの資料整理
 
-- PPOの説明を整理し、文章の構成や数式の表示を修正して、内容を理解しやすい形にした[PPOのflow](docs/study/report/PPO_flow.pdf)。
+- PPOの説明を整理し、文章の構成や数式の表示を修正して、内容を理解しやすい形にした[PPOのflow](docs/study/report/fbe21cb3-634b-44b3-a31d-46bdf2ce762b_ppo_flow_readable_2026-10-19.pdf)。
 - ChatGPTとNotion・GitHubを連携し、Notionに整理した研究資料をGitHubにも反映できる環境を整えた。
 
 ### PPOと大脳基底核の対応づけ
