@@ -22,7 +22,7 @@
 - PPOの方策更新を神経活動に対応づける方法を検討する中で、Clipped-Objective Policy Gradient（CoPG）という強化学習手法を見つけた。CoPGでは、クリッピングを維持しながら、神経活動に対応づけにくい「方策勾配に方策比を直接掛ける処理」を省ける。そこで、PPOとCoPGの更新方法の違いを原著論文で確認した。
   - 論文名：Clipped-Objective Policy Gradients for Pessimistic Policy Optimization
   - 著者：Jared Markowitz、Edward W. Staley（2023）
-  - 内容：基本的な方策勾配に基づく目的関数に、PPOと同様のクリッピングを適用する手法を提案した。連続行動を扱う課題では、CoPGがPPOよりも探索を促し、学習性能が向上したと報告している。
+  - 内容：PPOのクリッピング（方策が一度に大きく変わりすぎるのを抑える仕組み）を残しつつ、方策の更新量の計算方法を変えた手法を提案した。連続行動を扱う課題では、CoPGがPPOよりも探索を促し、学習性能が向上したと報告している。
   - URL：[arXiv](https://arxiv.org/abs/2311.05846)
 
 ### CoPGを用いた到達運動のシミュレーション
